@@ -7,7 +7,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Add a marker to the map
-L.marker([51.505, -0.09]).addTo(map)
+L.marker([53.235, -1.42]).addTo(map)
     .bindPopup('A sample marker')
     .openPopup();
 
