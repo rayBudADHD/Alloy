@@ -1,5 +1,5 @@
 // Initialize the map using Leaflet.js
-const map = L.map('map').setView([51.505, -0.09], 13);  // Center the map at a given latitude and longitude
+const map = L.map('map').setView([53.235, -1.42], 13);  // Center the map at a given latitude and longitude
 
 // Add tile layer (OpenStreetMap)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
