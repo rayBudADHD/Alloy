@@ -3,175 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day Schedule Table with Drag and Drop</title>
+    <title>24-Hour Day Schedule</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Styling for scrollable table */
-        .table-container {
-            max-width: 100%;
-            overflow-x: auto;
+        /* Styling for the container */
+        .container {
+            margin-top: 50px;
         }
 
-        .schedule-table {
-            table-layout: fixed;
-            width: 100%;
-            border-collapse: collapse;
+        /* Styling for the header (date and navigation arrows) */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .schedule-table td, .schedule-table th {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-            min-width: 100px;
-            cursor: pointer;
-        }
-
-        .day-header {
-            width: 100px;
-            text-align: center;
+        .date-display {
+            font-size: 1.5rem;
             font-weight: bold;
         }
 
-        .schedule-cell {
-            height: 50px;
+        .arrow {
+            cursor: pointer;
+            font-size: 2rem;
+        }
+
+        /* Styling for the table */
+        .hour-table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .hour-table th {
+            text-align: center;
+            font-weight: bold;
+            padding: 10px 0;
+        }
+
+        .hour-table td {
+            width: 4%;
+            height: 60px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .hour-cell {
             position: relative;
         }
 
-        /* Style for draggable items */
-        .draggable-item {
-            padding: 10px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            margin: 5px;
-            cursor: move;
+        .hour-cell span {
+            position: absolute;
+            top: -20px;
+            width: 100%;
             text-align: center;
-            width: 100px;
-            height: 50px;
+            font-weight: normal;
         }
 
-        /* Optional: Style the 'dropped' item (when it's placed inside the schedule cell) */
-        .dropped {
-            background-color: #ffeb3b;
-        }
     </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <!-- Buttons for navigating days -->
-    <div class="mb-4">
-        <button id="prevDay" class="btn btn-primary">Previous Day</button>
-        <button id="nextDay" class="btn btn-primary">Next Day</button>
+<div class="container">
+    <div class="header">
+        <span class="arrow" id="prevDay">&larr;</span>
+        <span class="date-display" id="currentDate">Date: 2024-11-10</span>
+        <span class="arrow" id="nextDay">&rarr;</span>
     </div>
 
-    <!-- Draggable Items Table -->
-    <div class="mb-4">
-        <h5>Draggable Items</h5>
-        <div class="row">
-            <div class="col-2">
-                <div id="item1" class="draggable-item" draggable="true">Item 1</div>
-            </div>
-            <div class="col-2">
-                <div id="item2" class="draggable-item" draggable="true">Item 2</div>
-            </div>
-            <div class="col-2">
-                <div id="item3" class="draggable-item" draggable="true">Item 3</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scrollable Schedule Table -->
-    <div class="table-container">
-        <table class="schedule-table">
-            <thead>
-                <tr>
-                    <th class="day-header">Time</th>
-                    <th class="day-header" id="day1">Day 1</th>
-                    <th class="day-header" id="day2">Day 2</th>
-                    <th class="day-header" id="day3">Day 3</th>
-                    <th class="day-header" id="day4">Day 4</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Hourly rows -->
-                <tr>
-                    <td class="day-header">00:00</td>
-                    <td class="schedule-cell" data-hour="00:00" id="cell-1-1"></td>
-                    <td class="schedule-cell" data-hour="00:00" id="cell-1-2"></td>
-                    <td class="schedule-cell" data-hour="00:00" id="cell-1-3"></td>
-                    <td class="schedule-cell" data-hour="00:00" id="cell-1-4"></td>
-                </tr>
-                <tr>
-                    <td class="day-header">01:00</td>
-                    <td class="schedule-cell" data-hour="01:00" id="cell-2-1"></td>
-                    <td class="schedule-cell" data-hour="01:00" id="cell-2-2"></td>
-                    <td class="schedule-cell" data-hour="01:00" id="cell-2-3"></td>
-                    <td class="schedule-cell" data-hour="01:00" id="cell-2-4"></td>
-                </tr>
-                <!-- More rows for each hour can be added here -->
-                <tr>
-                    <td class="day-header">02:00</td>
-                    <td class="schedule-cell" data-hour="02:00" id="cell-3-1"></td>
-                    <td class="schedule-cell" data-hour="02:00" id="cell-3-2"></td>
-                    <td class="schedule-cell" data-hour="02:00" id="cell-3-3"></td>
-                    <td class="schedule-cell" data-hour="02:00" id="cell-3-4"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <!-- Table for showing 24 hours of the day -->
+    <table class="hour-table table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th class="hour-cell">
+                    <span>00:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>01:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>02:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>03:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>04:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>05:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>06:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>07:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>08:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>09:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>10:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>11:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>12:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>13:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>14:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>15:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>16:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>17:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>18:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>19:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>20:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>21:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>22:00</span>
+                </th>
+                <th class="hour-cell">
+                    <span>23:00</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+                <td class="hour-cell"></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <!-- Include Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Handle Drag and Drop functionality
-    const items = document.querySelectorAll('.draggable-item');
-    const cells = document.querySelectorAll('.schedule-cell');
+    // Get current date
+    let currentDate = new Date();
 
-    items.forEach(item => {
-        item.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text', e.target.id);
-        });
-    });
-
-    cells.forEach(cell => {
-        cell.addEventListener('dragover', (e) => {
-            e.preventDefault();  // Allow the drop
-        });
-
-        cell.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const itemId = e.dataTransfer.getData('text');
-            const item = document.getElementById(itemId);
-            if (!cell.hasChildNodes()) {
-                cell.appendChild(item);
-                item.classList.add('dropped');  // Add a 'dropped' style for visual feedback
-            }
-        });
-    });
-
-    // Navigation buttons to switch between days
-    let currentDayIndex = 1;
-
-    function updateDayHeaders() {
-        const days = document.querySelectorAll('.day-header');
-        days.forEach((day, index) => {
-            day.textContent = `Day ${index + currentDayIndex}`;
-        });
+    // Function to update the date display
+    function updateDateDisplay() {
+        const dateDisplay = document.getElementById('currentDate');
+        const formattedDate = currentDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+        dateDisplay.textContent = `Date: ${formattedDate}`;
     }
 
+    // Event listeners for arrows to navigate between days
     document.getElementById('prevDay').addEventListener('click', () => {
-        currentDayIndex--;
-        updateDayHeaders();
+        currentDate.setDate(currentDate.getDate() - 1);
+        updateDateDisplay();
     });
 
     document.getElementById('nextDay').addEventListener('click', () => {
-        currentDayIndex++;
-        updateDayHeaders();
+        currentDate.setDate(currentDate.getDate() + 1);
+        updateDateDisplay();
     });
 
-    updateDayHeaders(); // Initial call to set the day headers
+    // Initialize the date display
+    updateDateDisplay();
 </script>
 
 </body>
