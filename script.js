@@ -11,14 +11,3 @@ L.marker([53.235, -1.42]).addTo(map)
     .bindPopup('A sample marker')
     .openPopup();
 
-// Sidebar toggle functionality
-const sidebar = document.getElementById('sidebar');
-const toggleBtn = document.getElementById('toggle-btn');
-
-toggleBtn.addEventListener('click', () => {
-    if (sidebar.style.left === '0px') {
-        sidebar.style.left = '-250px';  // Hide sidebar
-    } else {
-        sidebar.style.left = '0px';  // Show sidebar
-    }
-});
