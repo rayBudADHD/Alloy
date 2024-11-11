@@ -3,85 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map with Sidebar</title>
-    <!-- Include Bootstrap CSS -->
+    <title>Day Schedule Table with Drag and Drop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Include Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <!-- Include your own CSS (Optional for further styling) -->
-    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Style the sidebar */
-        #sidebar {
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            background-color: #f8f9fa;
-            border-right: 1px solid #ddd;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
+        /* Styling for scrollable table */
+        .table-container {
+            max-width: 100%;
+            overflow-x: auto;
         }
 
-        #sidebar.active {
-            transform: translateX(0);
+        .schedule-table {
+            table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        #map {
-            height: 100vh;
-            margin-left: 250px; /* Offset map by sidebar width */
-            transition: margin-left 0.3s ease;
+        .schedule-table td, .schedule-table th {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            min-width: 100px;
+            cursor: pointer;
         }
 
-        /* Button to toggle sidebar */
-        #toggle-sidebar-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
+        .day-header {
+            width: 100px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .schedule-cell {
+            height: 50px;
+            position: relative;
+        }
+
+        /* Style for draggable items */
+        .draggable-item {
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            margin: 5px;
+            cursor: move;
+            text-align: center;
+            width: 100px;
+            height: 50px;
+        }
+
+        /* Optional: Style the 'dropped' item (when it's placed inside the schedule cell) */
+        .dropped {
+            background-color: #ffeb3b;
         }
     </style>
 </head>
 <body>
 
-    <!-- Button to toggle sidebar -->
-    <button id="toggle-sidebar-btn" class="btn btn-primary">Toggle Sidebar</button>
-
-    <!-- Sidebar -->
-    <div id="sidebar" class="p-3">
-        <h4>Sidebar</h4>
-        <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-        </p>
-        <img src="https://picsum.photos/500/500/?image=54" class="img-fluid" alt="Random image">
+<div class="container mt-5">
+    <!-- Buttons for navigating days -->
+    <div class="mb-4">
+        <button id="prevDay" class="btn btn-primary">Previous Day</button>
+        <button id="nextDay" class="btn btn-primary">Next Day</button>
     </div>
 
-    <!-- Map container -->
-    <div id="map"></div>
+    <!-- Draggable Items Table -->
+    <div class="mb-4">
+        <h5>Draggable Items</h5>
+        <div class="row">
+            <div class="col-2">
+                <div id="item1" class="draggable-item" draggable="true">Item 1</div>
+            </div>
+            <div class="col-2">
+                <div id="item2" class="draggable-item" draggable="true">Item 2</div>
+            </div>
+            <div class="col-2">
+                <div id="item3" class="draggable-item" draggable="true">Item 3</div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Include Leaflet JS -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scrollable Schedule Table -->
+    <div class="table-container">
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th class="day-header">Time</th>
+                    <th class="day-header" id="day1">Day 1</th>
+                    <th class="day-header" id="day2">Day 2</th>
+                    <th class="day-header" id="day3">Day 3</th>
+                    <th class="day-header" id="day4">Day 4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Hourly rows -->
+                <tr>
+                    <td class="day-header">00:00</td>
+                    <td class="schedule-cell" data-hour="00:00" id="cell-1-1"></td>
+                    <td class="schedule-cell" data-hour="00:00" id="cell-1-2"></td>
+                    <td class="schedule-cell" data-hour="00:00" id="cell-1-3"></td>
+                    <td class="schedule-cell" data-hour="00:00" id="cell-1-4"></td>
+                </tr>
+                <tr>
+                    <td class="day-header">01:00</td>
+                    <td class="schedule-cell" data-hour="01:00" id="cell-2-1"></td>
+                    <td class="schedule-cell" data-hour="01:00" id="cell-2-2"></td>
+                    <td class="schedule-cell" data-hour="01:00" id="cell-2-3"></td>
+                    <td class="schedule-cell" data-hour="01:00" id="cell-2-4"></td>
+                </tr>
+                <!-- More rows for each hour can be added here -->
+                <tr>
+                    <td class="day-header">02:00</td>
+                    <td class="schedule-cell" data-hour="02:00" id="cell-3-1"></td>
+                    <td class="schedule-cell" data-hour="02:00" id="cell-3-2"></td>
+                    <td class="schedule-cell" data-hour="02:00" id="cell-3-3"></td>
+                    <td class="schedule-cell" data-hour="02:00" id="cell-3-4"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-    <script>
-        // Initialize Leaflet map
-        var map = L.map('map').setView([51.5074, -0.1278], 13);  // Coordinates for London
+<!-- Include Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+<script>
+    // Handle Drag and Drop functionality
+    const items = document.querySelectorAll('.draggable-item');
+    const cells = document.querySelectorAll('.schedule-cell');
 
-        // Toggle sidebar visibility
-        const sidebar = document.getElementById('sidebar');
-        const toggleButton = document.getElementById('toggle-sidebar-btn');
-        const mapContainer = document.getElementById('map');
-
-        toggleButton.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            mapContainer.style.marginLeft = sidebar.classList.contains('active') ? '250px' : '0';
+    items.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text', e.target.id);
         });
-    </script>
+    });
+
+    cells.forEach(cell => {
+        cell.addEventListener('dragover', (e) => {
+            e.preventDefault();  // Allow the drop
+        });
+
+        cell.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const itemId = e.dataTransfer.getData('text');
+            const item = document.getElementById(itemId);
+            if (!cell.hasChildNodes()) {
+                cell.appendChild(item);
+                item.classList.add('dropped');  // Add a 'dropped' style for visual feedback
+            }
+        });
+    });
+
+    // Navigation buttons to switch between days
+    let currentDayIndex = 1;
+
+    function updateDayHeaders() {
+        const days = document.querySelectorAll('.day-header');
+        days.forEach((day, index) => {
+            day.textContent = `Day ${index + currentDayIndex}`;
+        });
+    }
+
+    document.getElementById('prevDay').addEventListener('click', () => {
+        currentDayIndex--;
+        updateDayHeaders();
+    });
+
+    document.getElementById('nextDay').addEventListener('click', () => {
+        currentDayIndex++;
+        updateDayHeaders();
+    });
+
+    updateDayHeaders(); // Initial call to set the day headers
+</script>
+
 </body>
 </html>
