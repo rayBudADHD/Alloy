@@ -22,4 +22,65 @@
                 <li class="draggable-item">Item 1</li>
                 <li class="draggable-item">Item 2</li>
                 <li class="draggable-item">Item 3</li>
-            </
+            </ul>
+        </div>
+        <div id="mapSection" class="flex-grow-1">
+            <div id="map" style="height: 100%;"></div>
+        </div>
+    </div>
+
+    <div id="tableSection" class="p-3" style="overflow-x: scroll; white-space: nowrap;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>00:00</th>
+                    <th>01:00</th>
+                    <th>02:00</th>
+                    <!-- More hours... -->
+                    <th>23:00</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <!-- Drag and drop items here -->
+                </tr>
+            </tbody>
+        </table>
+        <button id="prevDay">← Previous Day</button>
+        <button id="nextDay">Next Day →</button>
+    </div>
+
+    <!-- Popups -->
+    <div class="modal fade" id="popup1" tabindex="-1" aria-labelledby="popup1Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popup1Label">Popup 1 Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Content for Popup 1.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="popup2" tabindex="-1" aria-labelledby="popup2Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popup2Label">Popup 2 Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Content for Popup 2.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.
