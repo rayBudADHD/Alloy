@@ -1,13 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialize the map at a general location
-    var map = L.map('map', { dragging: true }).setView([53.2406, -1.4484], 13); // Chesterfield's coordinates
-
-    // Add OpenStreetMap tiles to the map
+    var map = L.map('map').setView([53.2406, -1.4484], 13); // Chesterfield's coordinates
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Example of dynamic data for markers
+    // Dynamic location data
     var locations = [
         {
             id: 1,
@@ -25,73 +22,89 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ];
 
-    // Loop through the locations and create markers
+    // Object to hold the mapping between markers and div elements
+    var markers = {};
+
     locations.forEach(function (location) {
-        // Create Leaflet markers (but they will not be dragged in this case)
+        // Create the Leaflet marker (but not draggable)
         var marker = L.marker([location.lat, location.lon]).addTo(map);
 
-        // Bind a popup with the information from the location object
+        // Bind a popup to the marker
         marker.bindPopup(`
             <b>${location.name}</b><br>
             ${location.description}
         `);
 
-        // Create a custom draggable div to represent the marker
+        // Create a draggable div for custom drag functionality
         var dragElement = document.createElement('div');
         dragElement.textContent = location.name;
-        dragElement.classList.add('drag-marker');  // Add CSS class for styling
-        dragElement.draggable = true;  // Make it draggable
+        dragElement.classList.add('drag-marker');
+        dragElement.draggable = true;
 
-        // Set custom data to be transferred when dragging starts
+        // Store the marker and div association in the markers object
+        markers[location.id] = {
+            marker: marker,
+            div: dragElement,
+            data: location
+        };
+
+        // Add the custom draggable element to the DOM
+        document.body.appendChild(dragElement);
+
+        // Handle dragstart event
         dragElement.addEventListener('dragstart', function (event) {
-            // Disable map dragging during drag operation
+            // Prevent map from moving when dragging the div
             map.dragging.disable();
 
-            // Set data for drag (marker details)
+            // Set drag data
             event.dataTransfer.setData('name', location.name);
             event.dataTransfer.setData('description', location.description);
-            event.dataTransfer.setData('lat', location.lat.toString()); // Ensure lat is a string
-            event.dataTransfer.setData('lon', location.lon.toString()); // Ensure lon is a string
+            event.dataTransfer.setData('lat', location.lat.toString());
+            event.dataTransfer.setData('lon', location.lon.toString());
+            event.dataTransfer.setData('id', location.id.toString()); // Store marker ID to match later
         });
 
-        // Re-enable map dragging when the drag operation ends
+        // Handle dragend event
         dragElement.addEventListener('dragend', function () {
+            // Re-enable map dragging after drag ends
             map.dragging.enable();
         });
 
-        // Append the draggable div to the body (or any specific container for the markers)
-        document.body.appendChild(dragElement);
-
-        // Handle the dragging logic (drag over and drop) in the bottom panel
+        // Handle dragover event on the table
         document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
             event.preventDefault();  // Allow drop
-            event.dataTransfer.dropEffect = "move";  // Show move cursor on drop target
+            event.dataTransfer.dropEffect = "move";  // Change cursor to indicate move action
         });
 
-        // Handle the drop event
+        // Handle the drop event on the table
         document.getElementById('bottom-panel').addEventListener('drop', function (event) {
             event.preventDefault();
 
             // Retrieve the data from the drag event
             var name = event.dataTransfer.getData('name');
             var description = event.dataTransfer.getData('description');
-            var lat = parseFloat(event.dataTransfer.getData('lat'));  // Convert lat to float
-            var lon = parseFloat(event.dataTransfer.getData('lon'));  // Convert lon to float
+            var lat = parseFloat(event.dataTransfer.getData('lat'));
+            var lon = parseFloat(event.dataTransfer.getData('lon'));
+            var id = parseInt(event.dataTransfer.getData('id'));  // Retrieve marker ID
 
             // Check if lat and lon are valid numbers
-            if (isNaN(lat) || isNaN(lon)) {
-                console.error('Error: Invalid Latitude or Longitude');
-                return;
-            }
+            if (isNaN(lat) || isNaN(lon)) return;
 
-            // Insert the dragged data into the table (add to bottom panel's table)
+            // Insert data into the table
             var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
-            var newRow = table.insertRow(table.rows.length);
+            var newRow = table.insertRow();
             newRow.insertCell(0).textContent = name;
             newRow.insertCell(1).textContent = description;
 
-            // Optional: Make the custom marker invisible on the map (if needed)
-            marker.setOpacity(0);  // This will make the Leaflet marker invisible (you can remove this if unnecessary)
+            // Make the marker invisible (or remove it from the map)
+            var markerData = markers[id];
+            if (markerData) {
+                markerData.marker.setOpacity(0);  // This hides the marker on the map
+            }
+
+            // Optionally, hide the div (or you could remove it from the DOM)
+            var draggedDiv = markers[id].div;
+            draggedDiv.style.display = 'none';  // Hides the div from the page after it’s dropped
         });
     });
 });
