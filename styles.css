@@ -1,26 +1,80 @@
-/* Custom CSS styles */
-#sidebar, #newSidebar {
-    width: 250px;
-}
-#mapSection {
-    flex-grow: 1;
-    height: 100vh; /* Adjust this to fit the screen */
-}
-.icon {
-    cursor: pointer;
-}
-.draggable-item {
-    cursor: grab;
-}
-#tableSection {
-    width: 100%;
-    overflow-x: scroll;
-    white-space: nowrap;
+/* Custom Styles */
+.panel {
+    transition: all 0.3s ease;
+  }
+  
+  .left-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 15%;
+    height: 100%;
+    background-color: #f8f9fa;
+    z-index: 10;
+  }
+  
+  .right-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 15%;
+    height: 100%;
+    background-color: #f8f9fa;
+    z-index: 10;
+  }
+  
+  .bottom-panel {
     position: fixed;
     bottom: 0;
+    left: 15%;
+    right: 15%;
+    height: 30%;
     background-color: #f8f9fa;
-    z-index: 999;
-}
-#mapSection {
-    margin-bottom: 100px; /* Ensures map is fully visible above the table */
-}
+    z-index: 5;
+  }
+  
+  .top-panel {
+    position: fixed;
+    top: 0;
+    left: 15%;
+    right: 15%;
+    bottom: 30%;
+    background-color: #f8f9fa;
+    z-index: 5;
+  }
+  
+  /* Hidden panels (collapsed) */
+  .collapsed {
+    width: 0 !important;
+    visibility: hidden;
+    padding: 0;
+  }
+  
+  .collapsed-left {
+    left: -15%;
+  }
+  
+  .collapsed-right {
+    right: -15%;
+  }
+  
+  .collapsed-bottom {
+    bottom: -30%;
+  }
+  
+  .collapsed-top {
+    top: 0;
+    height: 100%;
+  }
+  
+  .toggle-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
