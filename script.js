@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Dynamic location data
+    // Dynamic location data (array of markers)
     var locations = [
         {
             id: 1,
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ${location.description}
         `);
 
-        // Create a draggable div for custom drag functionality
+        // Create a draggable div for the marker
         var dragElement = document.createElement('div');
         dragElement.textContent = location.name;
         dragElement.classList.add('drag-marker');
@@ -56,27 +56,27 @@ document.addEventListener('DOMContentLoaded', function () {
             // Prevent map from moving when dragging the div
             map.dragging.disable();
 
-            // Set drag data
+            // Store the data to be transferred (marker data)
             event.dataTransfer.setData('name', location.name);
             event.dataTransfer.setData('description', location.description);
             event.dataTransfer.setData('lat', location.lat.toString());
             event.dataTransfer.setData('lon', location.lon.toString());
-            event.dataTransfer.setData('id', location.id.toString()); // Store marker ID to match later
+            event.dataTransfer.setData('id', location.id.toString()); // Store marker ID
         });
 
         // Handle dragend event
         dragElement.addEventListener('dragend', function () {
-            // Re-enable map dragging after drag ends
+            // Re-enable map dragging after the drag operation ends
             map.dragging.enable();
         });
 
-        // Handle dragover event on the table
+        // Handle dragover event on the table (drop target)
         document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
-            event.preventDefault();  // Allow drop
-            event.dataTransfer.dropEffect = "move";  // Change cursor to indicate move action
+            event.preventDefault();  // Allow the drop
+            event.dataTransfer.dropEffect = "move";  // Change cursor to indicate move
         });
 
-        // Handle the drop event on the table
+        // Handle drop event on the table (accept the drop)
         document.getElementById('bottom-panel').addEventListener('drop', function (event) {
             event.preventDefault();
 
@@ -85,26 +85,24 @@ document.addEventListener('DOMContentLoaded', function () {
             var description = event.dataTransfer.getData('description');
             var lat = parseFloat(event.dataTransfer.getData('lat'));
             var lon = parseFloat(event.dataTransfer.getData('lon'));
-            var id = parseInt(event.dataTransfer.getData('id'));  // Retrieve marker ID
+            var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
 
-            // Check if lat and lon are valid numbers
+            // Check for valid lat and lon values
             if (isNaN(lat) || isNaN(lon)) return;
 
-            // Insert data into the table
+            // Insert the data into the table
             var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
             var newRow = table.insertRow();
             newRow.insertCell(0).textContent = name;
             newRow.insertCell(1).textContent = description;
 
-            // Make the marker invisible (or remove it from the map)
+            // Retrieve the marker using the ID
             var markerData = markers[id];
             if (markerData) {
-                markerData.marker.setOpacity(0);  // This hides the marker on the map
+                // Make the marker invisible (or remove it from the map)
+                markerData.marker.setOpacity(0);  // Hide marker
+                markerData.div.style.display = 'none';  // Hide the draggable div
             }
-
-            // Optionally, hide the div (or you could remove it from the DOM)
-            var draggedDiv = markers[id].div;
-            draggedDiv.style.display = 'none';  // Hides the div from the page after it’s dropped
         });
     });
 });
