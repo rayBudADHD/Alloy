@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
         markers[location.id] = {
             marker: marker,
             div: dragElement,
-            data: location
+            data: location,
+            dropped: false // Flag to track if the div has already been dropped
         };
 
         // Append the draggable div to the body (or any other container)
@@ -91,12 +92,16 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('bottom-panel').addEventListener('drop', function (event) {
             event.preventDefault();
 
+            var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
+
+            // Check if the marker has already been dropped (avoid multiple entries)
+            if (markers[id].dropped) return;
+
             // Retrieve the data from the drag event
             var name = event.dataTransfer.getData('name');
             var description = event.dataTransfer.getData('description');
             var lat = parseFloat(event.dataTransfer.getData('lat'));
             var lon = parseFloat(event.dataTransfer.getData('lon'));
-            var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
 
             // Check for valid lat and lon values
             if (isNaN(lat) || isNaN(lon)) return;
@@ -132,6 +137,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Remove the table row (the record)
                 table.deleteRow(newRow.rowIndex);
             });
+
+            // Mark the marker as "dropped" to prevent it being added multiple times
+            markers[id].dropped = true;
 
             // Retrieve the marker using the ID
             var markerData = markers[id];
