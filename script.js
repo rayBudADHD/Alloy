@@ -65,8 +65,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 dragElement.style.left = `${point.x - dragElement.offsetWidth / 2}px`;
                 dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
                 dragElement.style.display = 'block'; // Show the div
+                markers[location.id].marker.setOpacity(1);  // Ensure marker is visible
             } else {
                 dragElement.style.display = 'none'; // Hide the div if it's out of bounds
+                markers[location.id].marker.setOpacity(0);  // Hide the marker if it's out of bounds
             }
         }
 
