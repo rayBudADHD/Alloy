@@ -6,7 +6,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Marker data (you can modify this or load dynamically)
+// Marker data (modify or load dynamically)
 var markersData = [
     {
         lat: 53.2406,
