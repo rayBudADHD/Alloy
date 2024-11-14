@@ -21,3 +21,14 @@ html, body {
     left: 0; /* Align it to the left */
     overflow-y: auto; /* Allow scrolling if content overflows */
 }
+
+/* Add some basic styling for the table */
+#marker-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#marker-table th, #marker-table td {
+    padding: 8px;
+    text-align: left;
+}
