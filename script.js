@@ -27,7 +27,7 @@ var markers = [];
 var divs = [];
 var addedMarkers = {}; // To track if a marker's data has already been added to the table
 
-// Create the markers on the map
+// Create the markers on the map and corresponding divs for dragging
 markersData.forEach(function(data, index) {
     var marker = L.marker([data.lat, data.lon]).addTo(map).bindPopup(data.name + "<br>" + data.description);
 
@@ -38,7 +38,7 @@ markersData.forEach(function(data, index) {
     div.setAttribute("draggable", "true");
     div.innerHTML = data.name; // You can customize the content of the div as needed
 
-    // Store the marker and div
+    // Store the marker and div in the arrays
     markers.push(marker);
     divs.push(div);
 
@@ -51,7 +51,7 @@ markersData.forEach(function(data, index) {
     document.getElementById("table-panel").appendChild(div);
 });
 
-// Add a table to the bottom panel where we drop the marker data
+// Create a table for the bottom panel where we drop the marker data
 var table = document.createElement("table");
 table.classList.add("table");
 document.getElementById("table-panel").appendChild(table);
