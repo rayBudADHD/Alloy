@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Insert the data into the table
             var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
             var newRow = table.insertRow();
+            newRow.setAttribute('data-id', id); // Add custom data attribute for row identification
             newRow.insertCell(0).textContent = name;
             newRow.insertCell(1).textContent = description;
 
@@ -121,25 +122,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Add click event to the cross button
             crossButton.addEventListener('click', function () {
-                // Retrieve the marker using the ID
-                var markerData = markers[id];
+                // Retrieve the row and marker ID from the clicked cross
+                var row = this.closest('tr'); // Find the closest row to the clicked button
+                var markerId = row.getAttribute('data-id'); // Get the marker ID from the row's data-id attribute
+
+                // Retrieve the marker and div using the ID
+                var markerData = markers[markerId];
                 if (markerData) {
                     // Make the marker visible again
                     markerData.marker.setOpacity(1);  // Show marker
 
                     // Move the draggable div back to the marker's position
-                    var point = map.latLngToContainerPoint([location.lat, location.lon]);
+                    var point = map.latLngToContainerPoint([markerData.data.lat, markerData.data.lon]);
                     markerData.div.style.left = `${point.x - markerData.div.offsetWidth / 2}px`;
                     markerData.div.style.top = `${point.y - markerData.div.offsetHeight / 2}px`;
                     markerData.div.style.display = 'block';  // Show the draggable div again
                 }
 
                 // Remove the table row (the record)
-                var rowIndex = newRow.rowIndex;
-                table.deleteRow(rowIndex);
+                row.remove();
 
                 // Mark the marker as available again for dragging
-                markers[id].dropped = false; // Reset the dropped flag
+                markers[markerId].dropped = false; // Reset the dropped flag
             });
 
             // Mark the marker as "dropped" to prevent it from being added multiple times
