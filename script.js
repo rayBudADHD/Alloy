@@ -12,4 +12,4 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var marker = L.marker([53.2406, -1.4484]).addTo(map);
 
 // Add a popup to the marker that will display when it's clicked
-marker.bindPopup("<b>Chesterfield, UK</b><br>This is the town center.").openPopup();
+marker.bindPopup("<b>Job Number - 123456</b><br>Carriageway Pothole.").openPopup();
