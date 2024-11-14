@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
         dragElement.addEventListener('dragstart', function (event) {
             event.dataTransfer.setData('name', location.name);
             event.dataTransfer.setData('description', location.description);
-            event.dataTransfer.setData('lat', location.lat); // Set the latitude
-            event.dataTransfer.setData('lon', location.lon); // Set the longitude
+            event.dataTransfer.setData('lat', location.lat.toString()); // Ensure lat is stored as a string
+            event.dataTransfer.setData('lon', location.lon.toString()); // Ensure lon is stored as a string
         });
 
         // Add the custom draggable element to the DOM
@@ -66,8 +66,14 @@ document.addEventListener('DOMContentLoaded', function () {
             // Retrieve the data from the drag event
             var name = event.dataTransfer.getData('name');
             var description = event.dataTransfer.getData('description');
-            var lat = event.dataTransfer.getData('lat');  // Get latitude
-            var lon = event.dataTransfer.getData('lon');  // Get longitude
+            var lat = parseFloat(event.dataTransfer.getData('lat'));  // Convert lat to float
+            var lon = parseFloat(event.dataTransfer.getData('lon'));  // Convert lon to float
+
+            // Check if lat and lon are properly parsed as numbers
+            if (isNaN(lat) || isNaN(lon)) {
+                console.error('Error: Latitude or Longitude is not a valid number.');
+                return;
+            }
 
             // Insert the dragged data into the table
             var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
