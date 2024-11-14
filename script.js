@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Object to hold the mapping between markers and div elements
     var markers = {};
-    var markersAdded = {};  // Track if a marker has already been added to the table
 
     locations.forEach(function (location) {
         // Create the Leaflet marker
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ${location.description}
         `);
 
-        // Create the draggable div for the marker, this will be used as the draggable element
+        // Create the draggable div for the marker
         var dragElement = document.createElement('div');
         dragElement.textContent = location.name; // Name inside the div
         dragElement.classList.add('drag-marker'); // Add the class to the div
@@ -59,9 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
             dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
         }
 
-        // Call the function initially and whenever the map is moved
+        // Initial position and update when the map moves
         updateDivPosition();
-        map.on('move', updateDivPosition); // Update position on map move
+        map.on('move', updateDivPosition);
 
         // Handle dragstart event
         dragElement.addEventListener('dragstart', function (event) {
@@ -84,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Handle dragover event on the table (drop target)
         document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
-            event.preventDefault();  // Allow the drop
+            event.preventDefault(); // Allow the drop
             event.dataTransfer.dropEffect = "move";  // Change cursor to indicate move
         });
 
@@ -99,11 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
             var lon = parseFloat(event.dataTransfer.getData('lon'));
             var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
 
-            // Check if the marker has already been added to the table
-            if (markersAdded[id]) {
-                return; // If it has been added, do nothing
-            }
-
             // Check for valid lat and lon values
             if (isNaN(lat) || isNaN(lon)) return;
 
@@ -113,8 +107,31 @@ document.addEventListener('DOMContentLoaded', function () {
             newRow.insertCell(0).textContent = name;
             newRow.insertCell(1).textContent = description;
 
-            // Mark this marker as added
-            markersAdded[id] = true;
+            // Add the cross button to the row
+            var crossCell = newRow.insertCell(2);
+            var crossButton = document.createElement('button');
+            crossButton.textContent = '❌';  // The cross icon
+            crossButton.classList.add('remove-record');  // Optional class for styling
+            crossCell.appendChild(crossButton);
+
+            // Add click event to the cross button
+            crossButton.addEventListener('click', function () {
+                // Retrieve the marker using the ID
+                var markerData = markers[id];
+                if (markerData) {
+                    // Make the marker visible again
+                    markerData.marker.setOpacity(1);  // Show marker
+
+                    // Move the draggable div back to the marker's position
+                    var point = map.latLngToContainerPoint([location.lat, location.lon]);
+                    markerData.div.style.left = `${point.x - markerData.div.offsetWidth / 2}px`;
+                    markerData.div.style.top = `${point.y - markerData.div.offsetHeight / 2}px`;
+                    markerData.div.style.display = 'block';  // Show the draggable div again
+                }
+
+                // Remove the table row (the record)
+                table.deleteRow(newRow.rowIndex);
+            });
 
             // Retrieve the marker using the ID
             var markerData = markers[id];

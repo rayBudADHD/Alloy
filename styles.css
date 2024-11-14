@@ -54,3 +54,17 @@ html, body {
 #bottom-panel:hover {
     background-color: #e0e0e0;
 }
+
+/* Style for the cross button */
+.remove-record {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.remove-record:hover {
+    color: darkred;
+}
