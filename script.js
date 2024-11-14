@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize the map at a general location
-    var map = L.map('map', { dragEnable: true }).setView([53.2406, -1.4484], 13); // Chesterfield's coordinates
+    var map = L.map('map').setView([53.2406, -1.4484], 13); // Chesterfield's coordinates
 
     // Add OpenStreetMap tiles to the map
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -25,46 +25,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ];
 
-    // Loop through the locations and create draggable markers
+    // Loop through the locations and create markers
     locations.forEach(function (location) {
-        var marker = L.marker([location.lat, location.lon], { draggable: true }).addTo(map);
+        var marker = L.marker([location.lat, location.lon]).addTo(map);
 
-        // Bind a dynamic popup with the information from the location object
+        // Bind a popup with the information from the location object
         marker.bindPopup(`
             <b>${location.name}</b><br>
             ${location.description}
         `);
 
-        // Disable map dragging when the marker is being dragged
-        marker.on('dragstart', function () {
-            map.dragging.disable();  // Disable map drag
+        // Add a custom icon (this will be used for dragging)
+        var dragElement = document.createElement('div');
+        dragElement.textContent = location.name;
+        dragElement.classList.add('drag-marker');  // Class for styling
+        dragElement.draggable = true;  // Make it draggable
+
+        // When the drag starts, set the drag data
+        dragElement.addEventListener('dragstart', function (event) {
+            event.dataTransfer.setData('name', location.name);
+            event.dataTransfer.setData('description', location.description);
         });
 
-        // Re-enable map dragging after the drag ends
-        marker.on('dragend', function () {
-            map.dragging.enable();  // Re-enable map drag
-        });
-
-        // When the drag starts, we set the drag data
-        marker.on('dragstart', function (event) {
-            event.target._icon.setAttribute("draggable", "true"); // Make the marker draggable
-
-            // Store data in the drag event (this will be passed to the drop target)
-            event.target._icon.setAttribute("data-name", location.name);
-            event.target._icon.setAttribute("data-description", location.description);
-        });
-
-        // Set up event for when marker is dragged and dropped onto the table
-        document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
-            event.preventDefault(); // Allow drop
-        });
-
-        document.getElementById('bottom-panel').addEventListener('drop', function (event) {
-            event.preventDefault();
-
-            // Get the dragged data from the marker's attributes
-            var name = event.target.querySelector('[data-name]').getAttribute("data-name");
-            var description = event.target.querySelector('[data-description]').getAttribute("data-description");
+        // When the drag ends, append the marker data to the table
+        dragElement.addEventListener('dragend', function (event) {
+            var name = event.dataTransfer.getData('name');
+            var description = event.dataTransfer.getData('description');
 
             // Insert the dragged data into the table
             var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
@@ -72,8 +58,29 @@ document.addEventListener('DOMContentLoaded', function () {
             newRow.insertCell(0).textContent = name;
             newRow.insertCell(1).textContent = description;
 
-            // Optionally, you can also remove the data after drop
-            event.target._icon.removeAttribute("draggable");
+            // Optionally, you can remove the data after drop
         });
+
+        // Add the custom draggable element to the map
+        document.body.appendChild(dragElement);
+    });
+
+    // Set up event for the table to accept the drop
+    document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
+        event.preventDefault();  // Allow drop
+    });
+
+    // Handle the drop of the draggable marker's data into the table
+    document.getElementById('bottom-panel').addEventListener('drop', function (event) {
+        event.preventDefault();
+
+        var name = event.dataTransfer.getData('name');
+        var description = event.dataTransfer.getData('description');
+
+        // Insert the dragged data into the table
+        var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow(table.rows.length);
+        newRow.insertCell(0).textContent = name;
+        newRow.insertCell(1).textContent = description;
     });
 });

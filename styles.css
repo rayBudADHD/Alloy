@@ -1,25 +1,22 @@
-/* styles.css */
-
 html, body {
     height: 100%;
     margin: 0;
 }
 
 #map {
-    height: 70%;
+    height: 70%; /* Top 70% of the screen */
     width: 100%;
 }
 
-/* Bottom panel takes up 30% of the screen */
 #bottom-panel {
     height: 30%; /* Bottom 30% of the screen */
     width: 100%;
-    background-color: #f1f1f1; /* Optional background color */
-    padding: 20px; /* Optional padding */
-    position: fixed; /* Make it stay at the bottom */
-    bottom: 0; /* Align it to the bottom */
-    left: 0; /* Align it to the left */
-    overflow-y: auto; /* Allow scrolling if content overflows */
+    background-color: #f1f1f1;
+    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
 }
 
 /* Add some basic styling for the table */
