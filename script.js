@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
 
             // Check if the marker has already been dropped (avoid multiple entries)
-            if (markers[id].dropped) return;
+            if (markers[id].dropped) return; // Do nothing if already dropped
 
             // Retrieve the data from the drag event
             var name = event.dataTransfer.getData('name');
@@ -136,6 +136,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Remove the table row (the record)
                 table.deleteRow(newRow.rowIndex);
+
+                // Mark the marker as available again for dragging
+                markers[id].dropped = false; // Reset the dropped flag
             });
 
             // Mark the marker as "dropped" to prevent it being added multiple times
