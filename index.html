@@ -1,54 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebApp Layout</title>
-  <!-- Link to the external CSS file -->
-  <link href="styles.css" rel="stylesheet">
-  <!-- Bootstrap CDN for responsive grid system -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6X+T1lTg2s1ErLZZZ2FQK7oheJ7eFN9NJVV6MBL8qP5L3rgFdWs8fw82xV" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map of Chesterfield</title>
+    <!-- Leaflet CSS (from CDN) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Link to external CSS file (optional) -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Left Panel -->
-  <div id="leftPanel" class="panel left-panel">
-    <button class="toggle-btn" id="leftToggleBtn">Toggle Left</button>
-    <div class="container">
-      <button class="btn btn-primary">Button 1</button>
-      <button class="btn btn-primary">Button 2</button>
-      <button class="btn btn-primary">Button 3</button>
-    </div>
-  </div>
+    <!-- Div for the map, will take up the full screen -->
+    <div id="map"></div>
 
-  <!-- Right Panel -->
-  <div id="rightPanel" class="panel right-panel">
-    <button class="toggle-btn" id="rightToggleBtn">Toggle Right</button>
-    <div class="container">
-      <button class="btn btn-primary">Button A</button>
-      <button class="btn btn-primary">Button B</button>
-      <button class="btn btn-primary">Button C</button>
-    </div>
-  </div>
-
-  <!-- Bottom Panel -->
-  <div id="bottomPanel" class="panel bottom-panel">
-    <button class="toggle-btn" id="bottomToggleBtn">Toggle Bottom</button>
-    <div class="container">
-      <p>Bottom Panel Content</p>
-    </div>
-  </div>
-
-  <!-- Top Panel -->
-  <div id="topPanel" class="panel top-panel">
-    <button class="toggle-btn" id="topToggleBtn">Toggle Top</button>
-    <div class="container">
-      <p>Top Panel Content</p>
-    </div>
-  </div>
-
-  <!-- Link to the external JS file -->
-  <script src="scripts.js"></script>
-  <!-- Bootstrap JS (optional, but included for Bootstrap functionalities) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-kaQsp9HlwK2mfa7F4rrrXt4NeV5bVq7gJz1qfM4yyu3S6zXq6vrFhmdfdlmtfVwR" crossorigin="anonymous"></script>
+    <!-- Link to external JavaScript file -->
+    <script src="scripts.js"></script>
+    <!-- Leaflet JS (from CDN) -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </body>
 </html>

@@ -1,80 +1,11 @@
-/* Custom Styles */
-.panel {
-    transition: all 0.3s ease;
-  }
-  
-  .left-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 15%;
+/* styles.css */
+
+html, body {
     height: 100%;
-    background-color: #f8f9fa;
-    z-index: 10;
-  }
-  
-  .right-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 15%;
+    margin: 0;
+}
+
+#map {
     height: 100%;
-    background-color: #f8f9fa;
-    z-index: 10;
-  }
-  
-  .bottom-panel {
-    position: fixed;
-    bottom: 0;
-    left: 15%;
-    right: 15%;
-    height: 30%;
-    background-color: #f8f9fa;
-    z-index: 5;
-  }
-  
-  .top-panel {
-    position: fixed;
-    top: 0;
-    left: 15%;
-    right: 15%;
-    bottom: 30%;
-    background-color: #f8f9fa;
-    z-index: 5;
-  }
-  
-  /* Hidden panels (collapsed) */
-  .collapsed {
-    width: 0 !important;
-    visibility: hidden;
-    padding: 0;
-  }
-  
-  .collapsed-left {
-    left: -15%;
-  }
-  
-  .collapsed-right {
-    right: -15%;
-  }
-  
-  .collapsed-bottom {
-    bottom: -30%;
-  }
-  
-  .collapsed-top {
-    top: 0;
-    height: 100%;
-  }
-  
-  .toggle-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-  
+    width: 100%;
+}
