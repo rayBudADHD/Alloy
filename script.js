@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Object to hold the mapping between markers and div elements
     var markers = {};
-    var addedMarkers = {}; // To track which markers have been added to the table already
+    var markersAdded = {};  // Track if a marker has already been added to the table
 
     locations.forEach(function (location) {
         // Create the Leaflet marker
@@ -99,8 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
             var lon = parseFloat(event.dataTransfer.getData('lon'));
             var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
 
-            // Check if the marker has already been added
-            if (addedMarkers[id]) {
+            // Check if the marker has already been added to the table
+            if (markersAdded[id]) {
                 return; // If it has been added, do nothing
             }
 
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
             newRow.insertCell(1).textContent = description;
 
             // Mark this marker as added
-            addedMarkers[id] = true;
+            markersAdded[id] = true;
 
             // Retrieve the marker using the ID
             var markerData = markers[id];
