@@ -63,6 +63,7 @@ html, body {
     text-align: center;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold; /* Ensures the name is bold */
 }
 
 .drag-marker:hover {
