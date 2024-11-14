@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update the div position whenever the map moves or the marker moves
         function updateDivPosition() {
+            var bounds = map.getBounds(); // Get the map's current visible area
             var point = map.latLngToContainerPoint([location.lat, location.lon]);
 
-            // Check if the marker is within the map's visible bounds
-            var bounds = map.getBounds(); // Get the map's current visible area
+            // Check if the marker is within the map's bounds
             var isInBounds = bounds.contains([location.lat, location.lon]);
 
             // If the marker is within bounds, position the div and make it visible
