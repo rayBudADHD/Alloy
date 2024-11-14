@@ -1,129 +1,88 @@
-document.addEventListener('DOMContentLoaded', function () {
-    var map = L.map('map').setView([53.2406, -1.4484], 13); // Chesterfield's coordinates
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+// Initialize the map centered on Chesterfield, UK
+var map = L.map('map').setView([53.2406, -1.4484], 13); // Chesterfield's latitude and longitude
 
-    // Dynamic location data (array of markers)
-    var locations = [
-        {
-            id: 1,
-            name: "Chesterfield Town Centre",
-            lat: 53.2406,
-            lon: -1.4484,
-            description: "The heart of Chesterfield. Famous for its crooked spire."
-        },
-        {
-            id: 2,
-            name: "Chesterfield Railway Station",
-            lat: 53.2366,
-            lon: -1.4420,
-            description: "Chesterfield's main railway station with routes to London and beyond."
-        }
-    ];
+// Add OpenStreetMap tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
 
-    // Object to hold the mapping between markers and div elements
-    var markers = {};
+// Marker data (you can modify this or load dynamically)
+var markersData = [
+    {
+        lat: 53.2406,
+        lon: -1.4484,
+        name: "Marker 1",
+        description: "Information for Marker 1"
+    },
+    {
+        lat: 53.2430,
+        lon: -1.4410,
+        name: "Marker 2",
+        description: "Information for Marker 2"
+    }
+];
 
-    locations.forEach(function (location) {
-        // Create the Leaflet marker
-        var marker = L.marker([location.lat, location.lon]).addTo(map);
+// To store references for the markers and divs
+var markers = [];
+var divs = [];
+var addedMarkers = {}; // To track if a marker's data has already been added to the table
 
-        // Bind a popup to the marker
-        marker.bindPopup(`
-            <b>${location.name}</b><br>
-            ${location.description}
-        `);
+// Create the markers on the map
+markersData.forEach(function(data, index) {
+    var marker = L.marker([data.lat, data.lon]).addTo(map).bindPopup(data.name + "<br>" + data.description);
 
-        // Create a draggable div for the marker, this will be used as the draggable element
-        var dragElement = document.createElement('div');
-        dragElement.textContent = location.name;
-        dragElement.classList.add('drag-marker');
-        dragElement.draggable = true;
+    // Dynamically create a div for the marker
+    var div = document.createElement("div");
+    div.classList.add("marker-div");
+    div.id = "marker-div-" + index;
+    div.setAttribute("draggable", "true");
+    div.innerHTML = data.name; // You can customize the content of the div as needed
 
-        // Style the div to look like a marker (similar to Leaflet marker)
-        dragElement.style.position = 'absolute'; // Make it positionable on the screen
-        dragElement.style.padding = '5px';
-        dragElement.style.backgroundColor = '#3388ff'; // Same color as the marker
-        dragElement.style.color = '#fff';
-        dragElement.style.borderRadius = '50%';
-        dragElement.style.textAlign = 'center';
-        dragElement.style.cursor = 'pointer';
-        dragElement.style.pointerEvents = 'auto';
+    // Store the marker and div
+    markers.push(marker);
+    divs.push(div);
 
-        // Store the marker and div association in the markers object
-        markers[location.id] = {
-            marker: marker,
-            div: dragElement,
-            data: location
-        };
-
-        // Append the draggable div to the body (or any other container)
-        document.body.appendChild(dragElement);
-
-        // Update the div position whenever the map moves or the marker moves
-        function updateDivPosition() {
-            var point = map.latLngToContainerPoint([location.lat, location.lon]);
-            dragElement.style.left = `${point.x - dragElement.offsetWidth / 2}px`;
-            dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
-        }
-
-        // Call the function initially and whenever the map is moved
-        updateDivPosition();
-        map.on('move', updateDivPosition); // Update position on map move
-
-        // Handle dragstart event
-        dragElement.addEventListener('dragstart', function (event) {
-            // Prevent map from moving when dragging the div
-            map.dragging.disable();
-
-            // Store the data to be transferred (marker data)
-            event.dataTransfer.setData('name', location.name);
-            event.dataTransfer.setData('description', location.description);
-            event.dataTransfer.setData('lat', location.lat.toString());
-            event.dataTransfer.setData('lon', location.lon.toString());
-            event.dataTransfer.setData('id', location.id.toString()); // Store marker ID
-        });
-
-        // Handle dragend event
-        dragElement.addEventListener('dragend', function () {
-            // Re-enable map dragging after the drag operation ends
-            map.dragging.enable();
-        });
-
-        // Handle dragover event on the table (drop target)
-        document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
-            event.preventDefault();  // Allow the drop
-            event.dataTransfer.dropEffect = "move";  // Change cursor to indicate move
-        });
-
-        // Handle drop event on the table (accept the drop)
-        document.getElementById('bottom-panel').addEventListener('drop', function (event) {
-            event.preventDefault();
-
-            // Retrieve the data from the drag event
-            var name = event.dataTransfer.getData('name');
-            var description = event.dataTransfer.getData('description');
-            var lat = parseFloat(event.dataTransfer.getData('lat'));
-            var lon = parseFloat(event.dataTransfer.getData('lon'));
-            var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
-
-            // Check for valid lat and lon values
-            if (isNaN(lat) || isNaN(lon)) return;
-
-            // Insert the data into the table
-            var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
-            var newRow = table.insertRow();
-            newRow.insertCell(0).textContent = name;
-            newRow.insertCell(1).textContent = description;
-
-            // Retrieve the marker using the ID
-            var markerData = markers[id];
-            if (markerData) {
-                // Make the marker invisible (or remove it from the map)
-                markerData.marker.setOpacity(0);  // Hide marker
-                markerData.div.style.display = 'none';  // Hide the draggable div
-            }
-        });
+    // When the div is dragged, show the information
+    div.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData("text", div.id); // Set the div's id for later retrieval
     });
+
+    // Append the div to the DOM (for example, in the bottom panel)
+    document.getElementById("table-panel").appendChild(div);
+});
+
+// Add a table to the bottom panel where we drop the marker data
+var table = document.createElement("table");
+table.classList.add("table");
+document.getElementById("table-panel").appendChild(table);
+
+// Allow the table to accept the drop action
+document.getElementById("table-panel").addEventListener('dragover', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+});
+
+// Handle the drop event
+document.getElementById("table-panel").addEventListener('drop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var data = e.dataTransfer.getData("text");
+    var div = document.getElementById(data);
+
+    // Get the index of the dragged marker from its div id
+    var index = parseInt(div.id.split("-")[2]);
+
+    // Check if the data for this marker has already been added to the table
+    if (!addedMarkers[index]) {
+        // If not added before, append the data to the table
+        var row = table.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = markersData[index].name;
+        cell2.innerHTML = markersData[index].description;
+
+        // Mark this marker as added
+        addedMarkers[index] = true;
+    }
 });
