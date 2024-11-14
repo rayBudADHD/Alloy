@@ -8,35 +8,38 @@ html, body {
     width: 100%;
 }
 
-#bottom-panel {
-    height: 30%; /* Bottom 30% of the screen */
-    width: 100%;
-    background-color: #f1f1f1;
-    padding: 20px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    overflow-y: auto;
-}
-
-/* Add some basic styling for the table */
-#marker-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-#marker-table th, #marker-table td {
-    padding: 8px;
-    text-align: left;
-}
-
 /* Style the draggable markers */
 .drag-marker {
-    width: 100px;
+    width: 120px;
     height: 40px;
     background-color: lightblue;
     border-radius: 5px;
     padding: 10px;
     cursor: grab;
     margin: 5px;
+    text-align: center;
 }
+
+/* Style for the table */
+#marker-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#marker-table th, #marker-table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+#marker-table th {
+    background-color: #f2f2f2;
+}
+
+/* Add some visual feedback when dragging over the bottom panel */
+#bottom-panel {
+    border: 2px dashed #ccc;
+    padding: 10px;
+    min-height: 150px;
+    background-color: #f9f9f9;

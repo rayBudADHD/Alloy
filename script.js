@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Handle the dragging logic (drag over and drop)
         document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
             event.preventDefault();  // Allow drop
+            event.dataTransfer.dropEffect = "move";  // Change cursor to indicate move action
         });
 
         // Handle the drop event
@@ -81,9 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
             newRow.insertCell(0).textContent = name;
             newRow.insertCell(1).textContent = description;
 
-            // Optionally, you could move the marker to a new position here on the map
-            var newLatLon = new L.LatLng(lat, lon); // Create a new LatLng object
-            marker.setLatLng(newLatLon);  // Move the marker to the dropped location on the map
+            // Make the marker invisible by setting its opacity to 0
+            marker.setOpacity(0);  // This will make the marker invisible on the map
         });
     });
 });
