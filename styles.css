@@ -51,3 +51,19 @@ html, body {
 #bottom-panel:hover {
     background-color: #e0e0e0;
 }
+
+/* Style for the draggable marker div */
+.drag-marker {
+    position: absolute; /* Make it positionable on the screen */
+    width: 80px; /* Larger size to make it more noticeable */
+    height: 80px; /* Larger size to make it more noticeable */
+    background-color: #ff6347; /* Bright red color */
+    color: #fff; /* White text for visibility */
+    border-radius: 50%; /* Round shape (circle) */
+    text-align: center; /* Center text inside the div */
+    line-height: 80px; /* Align the text vertically within the div */
+    cursor: pointer; /* Indicate that the div is draggable */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    border: 2px solid #fff; /* White border to make the div more visible */
+    pointer-events: auto; /* Allow clicking and dragging interactions */
+}
