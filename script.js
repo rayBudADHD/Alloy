@@ -27,13 +27,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Loop through the locations and create markers
     locations.forEach(function (location) {
-        var marker = L.marker([location.lat, location.lon]).addTo(map);
+        var marker = L.marker([location.lat, location.lon], {
+            draggable: false // Disable default Leaflet drag
+        }).addTo(map);
 
         // Bind a popup with the information from the location object
         marker.bindPopup(`
             <b>${location.name}</b><br>
             ${location.description}
         `);
+
+        var dragElement = document.createElement('div');
+        dragElement.textContent = location.name;
+        dragElement.classList.add('drag-marker');  // Class for styling
+        dragElement.draggable = true;  // Make it draggable
 
         // Add a custom icon (this will be used for dragging)
         var dragElement = document.createElement('div');
@@ -45,6 +52,8 @@ document.addEventListener('DOMContentLoaded', function () {
         dragElement.addEventListener('dragstart', function (event) {
             event.dataTransfer.setData('name', location.name);
             event.dataTransfer.setData('description', location.description);
+            event.dataTransfer.setData('lat', location.lat);
+            event.dataTransfer.setData('lon', location.lon);
         });
 
         // When the drag ends, append the marker data to the table
@@ -83,4 +92,8 @@ document.addEventListener('DOMContentLoaded', function () {
         newRow.insertCell(0).textContent = name;
         newRow.insertCell(1).textContent = description;
     });
+
+    var newLatLon = new L.LatLng(lat, lon);
+    marker.setLatLng(newLatLon);  // Move the marker to the dropped location
+
 });

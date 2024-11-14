@@ -29,3 +29,14 @@ html, body {
     padding: 8px;
     text-align: left;
 }
+
+/* Style the draggable markers */
+.drag-marker {
+    width: 100px;
+    height: 40px;
+    background-color: lightblue;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: grab;
+    margin: 5px;
+}
