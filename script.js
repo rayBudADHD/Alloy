@@ -35,32 +35,38 @@ document.addEventListener('DOMContentLoaded', function () {
             ${location.description}
         `);
 
-// Create the draggable div for the marker, this will be used as the draggable element
-var dragElement = document.createElement('div');
-dragElement.textContent = location.name; // Name inside the div
-dragElement.classList.add('drag-marker'); // Add the class to the div
-dragElement.draggable = true; // Make it draggable
+        // Create a draggable div for the marker, this will be used as the draggable element
+        var dragElement = document.createElement('div');
+        dragElement.textContent = location.name;
+        dragElement.classList.add('drag-marker');
+        dragElement.draggable = true;
 
-// Store the marker and div association in the markers object
-markers[location.id] = {
-    marker: marker,
-    div: dragElement,
-    data: location
-};
+        // Style the div to look like a marker (similar to Leaflet marker)
+        dragElement.style.position = 'absolute'; // Make it positionable on the screen
+        dragElement.style.padding = '5px';
+        dragElement.style.backgroundColor = '#3388ff'; // Same color as the marker
+        dragElement.style.color = '#fff';
+        dragElement.style.borderRadius = '50%';
+        dragElement.style.textAlign = 'center';
+        dragElement.style.cursor = 'pointer';
+        dragElement.style.pointerEvents = 'auto';
 
-// Append the draggable div to the body (or any other container)
-document.body.appendChild(dragElement);
+        // Store the marker and div association in the markers object
+        markers[location.id] = {
+            marker: marker,
+            div: dragElement,
+            data: location
+        };
 
-// Update the div position whenever the map moves or the marker moves
-function updateDivPosition() {
-    var point = map.latLngToContainerPoint([location.lat, location.lon]);
-    dragElement.style.left = `${point.x - dragElement.offsetWidth / 2}px`;
-    dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
-}
+        // Append the draggable div to the body (or any other container)
+        document.body.appendChild(dragElement);
 
-// Call the function initially and whenever the map is moved
-updateDivPosition();
-map.on('move', updateDivPosition); // Update position on map move
+        // Update the div position whenever the map moves or the marker moves
+        function updateDivPosition() {
+            var point = map.latLngToContainerPoint([location.lat, location.lon]);
+            dragElement.style.left = `${point.x - dragElement.offsetWidth / 2}px`;
+            dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
+        }
 
         // Call the function initially and whenever the map is moved
         updateDivPosition();
