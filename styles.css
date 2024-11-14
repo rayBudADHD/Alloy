@@ -4,21 +4,23 @@ html, body {
 }
 
 #map {
-    height: 70%; /* Top 70% of the screen */
+    height: 75%; /* Top 75% of the screen */
     width: 100%;
 }
 
-/* Style the draggable markers */
+
+/* Basic styling for the draggable marker div */
 .drag-marker {
     width: 120px;
-    height: 40px;
-    background-color: lightblue;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: grab;
-    margin: 5px;
+    padding: 8px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: move;
+    margin: 10px;
+    border-radius: 4px;
     text-align: center;
 }
+
 
 /* Style for the table */
 #marker-table {
@@ -37,9 +39,15 @@ html, body {
     background-color: #f2f2f2;
 }
 
-/* Add some visual feedback when dragging over the bottom panel */
+/* Styling for the drop area (table) in the bottom panel */
 #bottom-panel {
     border: 2px dashed #ccc;
     padding: 10px;
     min-height: 150px;
     background-color: #f9f9f9;
+}
+
+/* Highlight the drop zone when dragging over it */
+#bottom-panel:hover {
+    background-color: #e0e0e0;
+}
