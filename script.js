@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize the map at a general location
-    var map = L.map('map').setView([53.2406, -1.4484], 13); // Chesterfield's coordinates
+    var map = L.map('map', { dragEnable: true }).setView([53.2406, -1.4484], 13); // Chesterfield's coordinates
 
     // Add OpenStreetMap tiles to the map
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -34,6 +34,16 @@ document.addEventListener('DOMContentLoaded', function () {
             <b>${location.name}</b><br>
             ${location.description}
         `);
+
+        // Disable map dragging when the marker is being dragged
+        marker.on('dragstart', function () {
+            map.dragging.disable();  // Disable map drag
+        });
+
+        // Re-enable map dragging after the drag ends
+        marker.on('dragend', function () {
+            map.dragging.enable();  // Re-enable map drag
+        });
 
         // When the drag starts, we set the drag data
         marker.on('dragstart', function (event) {
