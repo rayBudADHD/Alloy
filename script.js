@@ -55,13 +55,24 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update the div position whenever the map moves or the marker moves
         function updateDivPosition() {
             var point = map.latLngToContainerPoint([location.lat, location.lon]);
-            dragElement.style.left = `${point.x - dragElement.offsetWidth / 2}px`;
-            dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
+
+            // Check if the marker is within the map's visible bounds
+            var bounds = map.getBounds(); // Get the map's current visible area
+            var isInBounds = bounds.contains([location.lat, location.lon]);
+
+            // If the marker is within bounds, position the div and make it visible
+            if (isInBounds) {
+                dragElement.style.left = `${point.x - dragElement.offsetWidth / 2}px`;
+                dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
+                dragElement.style.display = 'block'; // Show the div
+            } else {
+                dragElement.style.display = 'none'; // Hide the div if it's out of bounds
+            }
         }
 
-        // Initial position and update when the map moves
+        // Call the function initially and whenever the map is moved
         updateDivPosition();
-        map.on('move', updateDivPosition);
+        map.on('move', updateDivPosition); // Update position on map move
 
         // Handle dragstart event
         dragElement.addEventListener('dragstart', function (event) {
