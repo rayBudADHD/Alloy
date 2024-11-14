@@ -128,29 +128,4 @@ document.addEventListener('DOMContentLoaded', function () {
                     markerData.marker.setOpacity(1);  // Show marker
 
                     // Move the draggable div back to the marker's position
-                    var point = map.latLngToContainerPoint([location.lat, location.lon]);
-                    markerData.div.style.left = `${point.x - markerData.div.offsetWidth / 2}px`;
-                    markerData.div.style.top = `${point.y - markerData.div.offsetHeight / 2}px`;
-                    markerData.div.style.display = 'block';  // Show the draggable div again
-                }
-
-                // Remove the table row (the record)
-                table.deleteRow(newRow.rowIndex);
-
-                // Mark the marker as available again for dragging
-                markers[id].dropped = false; // Reset the dropped flag
-            });
-
-            // Mark the marker as "dropped" to prevent it being added multiple times
-            markers[id].dropped = true;
-
-            // Retrieve the marker using the ID
-            var markerData = markers[id];
-            if (markerData) {
-                // Make the marker invisible (or remove it from the map)
-                markerData.marker.setOpacity(0);  // Hide marker
-                markerData.div.style.display = 'none';  // Hide the draggable div
-            }
-        });
-    });
-});
+                    var point
