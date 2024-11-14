@@ -37,29 +37,37 @@ document.addEventListener('DOMContentLoaded', function () {
             ${location.description}
         `);
 
+        // Add a custom draggable element to the DOM (which we will drag)
         var dragElement = document.createElement('div');
         dragElement.textContent = location.name;
         dragElement.classList.add('drag-marker');  // Class for styling
         dragElement.draggable = true;  // Make it draggable
 
-        // Add a custom icon (this will be used for dragging)
-        var dragElement = document.createElement('div');
-        dragElement.textContent = location.name;
-        dragElement.classList.add('drag-marker');  // Class for styling
-        dragElement.draggable = true;  // Make it draggable
-
-        // When the drag starts, set the drag data
+        // When the drag starts, store the marker data (latitude, longitude, name, and description)
         dragElement.addEventListener('dragstart', function (event) {
             event.dataTransfer.setData('name', location.name);
             event.dataTransfer.setData('description', location.description);
-            event.dataTransfer.setData('lat', location.lat);
-            event.dataTransfer.setData('lon', location.lon);
+            event.dataTransfer.setData('lat', location.lat); // Set the latitude
+            event.dataTransfer.setData('lon', location.lon); // Set the longitude
         });
 
-        // When the drag ends, append the marker data to the table
-        dragElement.addEventListener('dragend', function (event) {
+        // Add the custom draggable element to the DOM
+        document.body.appendChild(dragElement);
+
+        // Handle the dragging logic (drag over and drop)
+        document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
+            event.preventDefault();  // Allow drop
+        });
+
+        // Handle the drop event
+        document.getElementById('bottom-panel').addEventListener('drop', function (event) {
+            event.preventDefault();
+
+            // Retrieve the data from the drag event
             var name = event.dataTransfer.getData('name');
             var description = event.dataTransfer.getData('description');
+            var lat = event.dataTransfer.getData('lat');  // Get latitude
+            var lon = event.dataTransfer.getData('lon');  // Get longitude
 
             // Insert the dragged data into the table
             var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
@@ -67,33 +75,9 @@ document.addEventListener('DOMContentLoaded', function () {
             newRow.insertCell(0).textContent = name;
             newRow.insertCell(1).textContent = description;
 
-            // Optionally, you can remove the data after drop
+            // Optionally, you could move the marker to a new position here on the map
+            var newLatLon = new L.LatLng(lat, lon); // Create a new LatLng object
+            marker.setLatLng(newLatLon);  // Move the marker to the dropped location on the map
         });
-
-        // Add the custom draggable element to the map
-        document.body.appendChild(dragElement);
     });
-
-    // Set up event for the table to accept the drop
-    document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
-        event.preventDefault();  // Allow drop
-    });
-
-    // Handle the drop of the draggable marker's data into the table
-    document.getElementById('bottom-panel').addEventListener('drop', function (event) {
-        event.preventDefault();
-
-        var name = event.dataTransfer.getData('name');
-        var description = event.dataTransfer.getData('description');
-
-        // Insert the dragged data into the table
-        var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow(table.rows.length);
-        newRow.insertCell(0).textContent = name;
-        newRow.insertCell(1).textContent = description;
-    });
-
-    var newLatLon = new L.LatLng(lat, lon);
-    marker.setLatLng(newLatLon);  // Move the marker to the dropped location
-
 });
