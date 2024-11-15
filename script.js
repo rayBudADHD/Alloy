@@ -35,25 +35,18 @@ document.addEventListener('DOMContentLoaded', function () {
             ${location.description}
         `);
 
-        // Create the draggable div for the marker (with matching size)
+        // Create the draggable div for the marker
         var dragElement = document.createElement('div');
         dragElement.textContent = location.name; // Name inside the div
         dragElement.classList.add('drag-marker'); // Add the class to the div
         dragElement.draggable = true; // Make it draggable
-
-        // Set the div's size and shape to match the marker (e.g., 40px radius for both)
-        var markerRadius = 40; // This is the size of the marker
-        dragElement.style.width = `${markerRadius * 2}px`; // Double the radius for width
-        dragElement.style.height = `${markerRadius * 2}px`; // Double the radius for height
-        dragElement.style.borderRadius = '50%'; // Ensure it's circular like the marker
 
         // Store the marker and div association in the markers object
         markers[location.id] = {
             marker: marker,
             div: dragElement,
             data: location,
-            dropped: false, // Flag to track if the div has been dropped
-            markerOpacity: 1 // Default marker opacity
+            dropped: false // Flag to track if the div has already been dropped
         };
 
         // Append the draggable div to the body (or any other container)
@@ -88,13 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Prevent map from moving when dragging the div
             map.dragging.disable();
 
-            // Change marker color to grey when dragging starts
-            markers[location.id].marker.setIcon(L.divIcon({
-                className: 'leaflet-div-icon',
-                html: `<div style="background-color: grey; width: ${markerRadius * 2}px; height: ${markerRadius * 2}px; border-radius: 50%;"></div>`,
-                iconSize: [markerRadius * 2, markerRadius * 2]
-            }));
-
             // Store the data to be transferred (marker data)
             event.dataTransfer.setData('name', location.name);
             event.dataTransfer.setData('description', location.description);
@@ -107,15 +93,6 @@ document.addEventListener('DOMContentLoaded', function () {
         dragElement.addEventListener('dragend', function () {
             // Re-enable map dragging after the drag operation ends
             map.dragging.enable();
-
-            // Reset the marker back to its original state after the drag ends
-            if (!markers[location.id].dropped) {
-                markers[location.id].marker.setIcon(L.divIcon({
-                    className: 'leaflet-div-icon',
-                    html: `<div style="background-color: #ff6347; width: ${markerRadius * 2}px; height: ${markerRadius * 2}px; border-radius: 50%;"></div>`,
-                    iconSize: [markerRadius * 2, markerRadius * 2]
-                }));
-            }
         });
 
         // Handle dragover event on the table (drop target)
@@ -158,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Add click event to the cross button
             crossButton.addEventListener('click', function () {
+                // Retrieve the row and marker ID from the clicked cross
                 var row = this.closest('tr'); // Find the closest row to the clicked button
                 var markerId = row.getAttribute('data-id'); // Get the marker ID from the row's data-id attribute
 
@@ -184,8 +162,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // Mark the marker as "dropped" to prevent it from being added multiple times
             markers[id].dropped = true;
 
-            // Make the marker very opaque (faded) after it is dropped
-            markers[id].marker.setOpacity(0.1);  // Reduce opacity to make it "inactive"
+            // Retrieve the marker using the ID
+            var markerData = markers[id];
+            if (markerData) {
+                // Make the marker invisible (or remove it from the map)
+                markerData.marker.setOpacity(0);  // Hide marker
+                markerData.div.style.display = 'none';  // Hide the draggable div
+            }
         });
     });
 });
