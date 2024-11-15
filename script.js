@@ -124,4 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var lon = parseFloat(event.dataTransfer.getData('lon'));
 
             // Check for valid lat and lon values
-            if (isNaN(lat) || isNaN(l
+            if (isNaN(lat) || isNaN(lon)) return;
+
+            // Insert the data into the table
+            var table = document.getElementById
