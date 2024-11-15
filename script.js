@@ -87,12 +87,32 @@ document.addEventListener('DOMContentLoaded', function () {
             event.dataTransfer.setData('lat', location.lat.toString());
             event.dataTransfer.setData('lon', location.lon.toString());
             event.dataTransfer.setData('id', location.id.toString()); // Store marker ID
+
+            // Turn the marker grey when dragging starts
+            marker.setIcon(L.icon({
+                iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x-grey.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowAnchor: [10, 41],
+                shadowSize: [41, 41]
+            }));
         });
 
         // Handle dragend event
         dragElement.addEventListener('dragend', function () {
             // Re-enable map dragging after the drag operation ends
             map.dragging.enable();
+
+            // Reset the marker's icon back to normal
+            marker.setIcon(L.icon({
+                iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowAnchor: [10, 41],
+                shadowSize: [41, 41]
+            }));
         });
 
         // Handle dragover event on the table (drop target)
@@ -168,7 +188,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Make the marker invisible (or remove it from the map)
                 markerData.marker.setOpacity(0);  // Hide marker
                 markerData.div.style.display = 'none';  // Hide the draggable div
+
+                // Make the marker more opaque after being dropped
+                marker.setOpacity(0.2);  // Set to 20% opacity after drop
             }
         });
     });
+
+    // Add HTML structure for the bottom panel with gang rows and hours (this part should be in your HTML file)
+    var bottomPanel = document.getElementById('bottom-panel');
+    bottomPanel.innerHTML = `
+        <div class="container">
+            <div class="row" id="gangs-list">
+                <div class="col-12">
+                    <h4>Gangs</h4>
+                    <div id="gang1" class="gang-row">
+                        <div class="gang-name">Gang 1</div>
+                        <div class="hour-cell">8 AM</div>
+                        <div class="hour-cell">9 AM</div>
+                        <div class="hour-cell">10 AM</div>
+                        <div class="hour-cell">11 AM</div>
+                        <div class="hour-cell">12 PM</div>
+                        <div class="hour-cell">1 PM</div>
+                    </div>
+                    <div id="gang2" class="gang-row">
+                        <div class="gang-name">Gang 2</div>
+                        <div class="hour-cell">8 AM</div>
+                        <div class="hour-cell">9 AM</div>
+                        <div class="hour-cell">10 AM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 });

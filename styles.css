@@ -1,3 +1,4 @@
+/* General Page Styles */
 html, body {
     height: 100%;
     margin: 0;
@@ -48,6 +49,8 @@ html, body {
     padding: 10px;
     min-height: 150px;
     background-color: #f9f9f9;
+    overflow-x: auto; /* Enables horizontal scrolling */
+    max-width: 100%;
 }
 
 /* Highlight the drop zone when dragging over it */
@@ -55,16 +58,11 @@ html, body {
     background-color: #e0e0e0;
 }
 
-/* Style for the cross button */
-.remove-record {
-    background: none;
-    border: none;
-    color: red;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 0;
-}
-
-.remove-record:hover {
-    color: darkred;
+/* Gang Row and Hour Styles */
+.gang-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
 }
