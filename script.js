@@ -81,6 +81,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Prevent map from moving when dragging the div
             map.dragging.disable();
 
+            // Change the marker color to grey when dragging (for visual feedback)
+            marker.getElement().classList.add('dragging');
+
             // Store the data to be transferred (marker data)
             event.dataTransfer.setData('name', location.name);
             event.dataTransfer.setData('description', location.description);
@@ -93,6 +96,10 @@ document.addEventListener('DOMContentLoaded', function () {
         dragElement.addEventListener('dragend', function () {
             // Re-enable map dragging after the drag operation ends
             map.dragging.enable();
+
+            // After the drag ends, set the marker to be semi-transparent
+            marker.getElement().classList.remove('dragging'); // Remove the "dragging" class
+            markers[location.id].marker.setOpacity(0.5); // Make the marker semi-transparent
         });
 
         // Handle dragover event on the table (drop target)
@@ -117,58 +124,4 @@ document.addEventListener('DOMContentLoaded', function () {
             var lon = parseFloat(event.dataTransfer.getData('lon'));
 
             // Check for valid lat and lon values
-            if (isNaN(lat) || isNaN(lon)) return;
-
-            // Insert the data into the table
-            var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
-            var newRow = table.insertRow();
-            newRow.setAttribute('data-id', id); // Add custom data attribute for row identification
-            newRow.insertCell(0).textContent = name;
-            newRow.insertCell(1).textContent = description;
-
-            // Add the cross button to the row
-            var crossCell = newRow.insertCell(2);
-            var crossButton = document.createElement('button');
-            crossButton.textContent = '❌';  // The cross icon
-            crossButton.classList.add('remove-record');  // Optional class for styling
-            crossCell.appendChild(crossButton);
-
-            // Add click event to the cross button
-            crossButton.addEventListener('click', function () {
-                // Retrieve the row and marker ID from the clicked cross
-                var row = this.closest('tr'); // Find the closest row to the clicked button
-                var markerId = row.getAttribute('data-id'); // Get the marker ID from the row's data-id attribute
-
-                // Retrieve the marker and div using the ID
-                var markerData = markers[markerId];
-                if (markerData) {
-                    // Make the marker visible again
-                    markerData.marker.setOpacity(1);  // Show marker
-
-                    // Move the draggable div back to the marker's position
-                    var point = map.latLngToContainerPoint([markerData.data.lat, markerData.data.lon]);
-                    markerData.div.style.left = `${point.x - markerData.div.offsetWidth / 2}px`;
-                    markerData.div.style.top = `${point.y - markerData.div.offsetHeight / 2}px`;
-                    markerData.div.style.display = 'block';  // Show the draggable div again
-                }
-
-                // Remove the table row (the record)
-                row.remove();
-
-                // Mark the marker as available again for dragging
-                markers[markerId].dropped = false; // Reset the dropped flag
-            });
-
-            // Mark the marker as "dropped" to prevent it from being added multiple times
-            markers[id].dropped = true;
-
-            // Retrieve the marker using the ID
-            var markerData = markers[id];
-            if (markerData) {
-                // Make the marker invisible (or remove it from the map)
-                markerData.marker.setOpacity(0);  // Hide marker
-                markerData.div.style.display = 'none';  // Hide the draggable div
-            }
-        });
-    });
-});
+            if (isNaN(lat) || isNaN(l
