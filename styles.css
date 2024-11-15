@@ -23,13 +23,6 @@ html, body {
     border: 2px solid #fff; /* White border to make the div more visible */
     pointer-events: auto; /* Allow clicking and dragging interactions */
     z-index: 10; /* Ensure the div is always on top of other elements */
-    transition: background-color 0.2s, transform 0.2s; /* Smooth transition for drag */
-}
-
-/* Styling for when the marker is being dragged (to change div color) */
-.dragging {
-    background-color: #ff6347; /* Red div when dragging */
-    transform: scale(1.1); /* Slightly enlarge div while dragging */
 }
 
 /* Style for the table */
@@ -74,14 +67,4 @@ html, body {
 
 .remove-record:hover {
     color: darkred;
-}
-
-/* For the marker div being dropped */
-.marker-dropped {
-    opacity: 0.3; /* Make the marker more opaque when dropped */
-}
-
-/* Styling for when the div is matched with the marker */
-.drag-marker-activated {
-    background-color: #ff6347; /* Red color for draggable div */
 }
