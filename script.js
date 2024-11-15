@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ${location.description}
         `);
 
-        // Create the draggable div for the marker
+        // Create the draggable div for the marker, this will be used as the draggable element
         var dragElement = document.createElement('div');
         dragElement.textContent = location.name; // Name inside the div
         dragElement.classList.add('drag-marker'); // Add the class to the div
@@ -45,8 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         markers[location.id] = {
             marker: marker,
             div: dragElement,
-            data: location,
-            dropped: false // Flag to track if the div has already been dropped
+            data: location
         };
 
         // Append the draggable div to the body (or any other container)
@@ -54,22 +53,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update the div position whenever the map moves or the marker moves
         function updateDivPosition() {
-            var bounds = map.getBounds(); // Get the map's current visible area
             var point = map.latLngToContainerPoint([location.lat, location.lon]);
-
-            // Check if the marker is within the map's bounds
-            var isInBounds = bounds.contains([location.lat, location.lon]);
-
-            // If the marker is within bounds, position the div and make it visible
-            if (isInBounds) {
-                dragElement.style.left = `${point.x - dragElement.offsetWidth / 2}px`;
-                dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
-                dragElement.style.display = 'block'; // Show the div
-                markers[location.id].marker.setOpacity(1);  // Ensure marker is visible
-            } else {
-                dragElement.style.display = 'none'; // Hide the div if it's out of bounds
-                markers[location.id].marker.setOpacity(0);  // Hide the marker if it's out of bounds
-            }
+            dragElement.style.left = `${point.x - dragElement.offsetWidth / 2}px`;
+            dragElement.style.top = `${point.y - dragElement.offsetHeight / 2}px`;
         }
 
         // Call the function initially and whenever the map is moved
@@ -81,8 +67,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Prevent map from moving when dragging the div
             map.dragging.disable();
 
-            // Change the marker color to grey when dragging (for visual feedback)
-            marker.getElement().classList.add('dragging');
+            // Mark the marker as grey while dragging the div
+            marker.setIcon(L.divIcon({
+                className: 'marker-grey', // Custom CSS class to change marker color
+                iconSize: [25, 41]
+            }));
 
             // Store the data to be transferred (marker data)
             event.dataTransfer.setData('name', location.name);
@@ -97,14 +86,20 @@ document.addEventListener('DOMContentLoaded', function () {
             // Re-enable map dragging after the drag operation ends
             map.dragging.enable();
 
-            // After the drag ends, set the marker to be semi-transparent
-            marker.getElement().classList.remove('dragging'); // Remove the "dragging" class
-            markers[location.id].marker.setOpacity(0.5); // Make the marker semi-transparent
+            // Reset the marker to its original color after the drag ends
+            marker.setIcon(L.icon({
+                iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png', // Default marker icon
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowAnchor: [12, 41],
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png'
+            }));
         });
 
         // Handle dragover event on the table (drop target)
         document.getElementById('bottom-panel').addEventListener('dragover', function (event) {
-            event.preventDefault(); // Allow the drop
+            event.preventDefault();  // Allow the drop
             event.dataTransfer.dropEffect = "move";  // Change cursor to indicate move
         });
 
@@ -112,19 +107,51 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('bottom-panel').addEventListener('drop', function (event) {
             event.preventDefault();
 
-            var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
-
-            // Check if the marker has already been dropped (avoid multiple entries)
-            if (markers[id].dropped) return; // Do nothing if already dropped
-
             // Retrieve the data from the drag event
             var name = event.dataTransfer.getData('name');
             var description = event.dataTransfer.getData('description');
             var lat = parseFloat(event.dataTransfer.getData('lat'));
             var lon = parseFloat(event.dataTransfer.getData('lon'));
+            var id = parseInt(event.dataTransfer.getData('id')); // Get the marker ID
 
             // Check for valid lat and lon values
             if (isNaN(lat) || isNaN(lon)) return;
 
             // Insert the data into the table
-            var table = document.getElementById
+            var table = document.getElementById('marker-table').getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow();
+            newRow.insertCell(0).textContent = name;
+            newRow.insertCell(1).textContent = description;
+
+            // Retrieve the marker using the ID
+            var markerData = markers[id];
+            if (markerData) {
+                // Make the marker invisible (or remove it from the map)
+                markerData.marker.setOpacity(0);  // Hide marker
+                markerData.div.style.display = 'none';  // Hide the draggable div
+            }
+        });
+
+        // Function to remove the record and reset the marker
+        function resetRecord(row, id) {
+            var markerData = markers[id];
+            if (markerData) {
+                // Show the marker again
+                markerData.marker.setOpacity(1);  // Show marker
+                markerData.div.style.display = 'block';  // Show the draggable div
+            }
+
+            // Remove the row from the table
+            row.parentNode.removeChild(row);
+        }
+
+        // Add event listeners to handle the remove action (cross button in the table)
+        document.getElementById('marker-table').addEventListener('click', function (event) {
+            if (event.target.classList.contains('remove-record')) {
+                var row = event.target.closest('tr');
+                var markerId = parseInt(row.getAttribute('data-id')); // Assuming row has a data-id attribute
+                resetRecord(row, markerId);
+            }
+        });
+    });
+});
